@@ -54,3 +54,4 @@ print(sol.minRemoveToMakeValid(test_3))
 print(sol.minRemoveToMakeValid(test_4))
 print(sol.minRemoveToMakeValid(test_5))
 print(sol.minRemoveToMakeValid(test_6))
+
