@@ -2,38 +2,52 @@ from typing import List
 
 
 class Solution:
-    def exist(self, board: List[List[str]], word: str) -> bool:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
 
-        n = len(board)
-        m = len(board[0])
-        if len(word) > (m * n): return False
+        self.lexicon = set(wordDict)
 
-        for row in range(n):
-            for col in range(m):
-                if board[row][col] == word[0]:
-                    found = self.search(board, row, col, word)
-                    if found:
-                        return True
+        return self.wb_helper(s, 0, cache={})
 
-        return False
+    def wb_helper(self, s, start, cache):
 
-    def search(self, board, row, col, word, seen=None):
+        if start == len(s):
+            return True
 
-        if seen is None: seen = set()
+        if start in cache:
+            return cache[start]
 
-        if row < 0 or row >= len(board) or col < 0 or col >= len(board[0]) or (row, col) in seen:
-            return False
+        for end in range(start+1, len(s)+1):
 
-        if board[row][col] == word[0]:
-            seen.add((row, col))
-
-            if len(word) == 1:
+            word = s[start:end]
+            if word in self.lexicon and self.wb_helper(s, end+1, cache):
+                cache[start] = True
                 return True
 
-            up = self.search(board, row - 1, col, word[1::], seen)
-            down = self.search(board, row + 1, col, word[1::], seen)
-            left = self.search(board, row, col - 1, word[1::], seen)
-            right = self.search(board, row, col + 1, word[1::], seen)
+        cache[start] = False
+        return False
 
-            return up or down or left or right
+    def wordBreak_old(self, s: str, wordDict: List[str]) -> bool:
+
+        lexicon = set(wordDict)
+
+        return self.wb_helper_old(s, lexicon, cache={})
+
+    def wb_helper_old(self, s, lexicon, cache):
+
+        if len(s) == 0:
+            return True
+
+        if s in cache:
+            return cache[s]
+
+        for index in range(len(s)):
+
+            word = s[0:index + 1]
+
+            if word in lexicon:
+                if self.wb_helper(s[index + 1:], lexicon, cache):
+                    cache[s] = True
+                    return True
+
+        cache[s] = False
         return False
